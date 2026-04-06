@@ -139,21 +139,42 @@ if uploaded_file is not None:
         st.table(df.head(10))
 
         # -------- AUTO CLEAN NUMERIC-LIKE COLUMNS --------
-        st.subheader("🛠 Auto Cleaning")
-        numeric_like_cols = detect_numeric_like_columns(df)
-        cleaned_numeric_cols = []
+st.subheader("🛠 Auto Cleaning")
 
-        for col in numeric_like_cols:
-            cleaned_col = clean_numeric_series(df[col])
-            # only replace if it meaningfully converts
-            if cleaned_col.notna().sum() > 0:
-                df[col] = cleaned_col
-                cleaned_numeric_cols.append(col)
+cleaned_numeric_cols = []
 
-        if cleaned_numeric_cols:
-            st.success(f"Converted to numeric: {', '.join(cleaned_numeric_cols)}")
-        else:
-            st.info("No messy numeric-like columns needed conversion.")
+# First: force-clean columns that look financial by name
+financial_keywords = ["amount", "revenue", "cost", "price", "spend", "sales", "value"]
+financial_cols = [
+    col for col in df.columns
+    if any(keyword in col.lower() for keyword in financial_keywords)
+]
+
+for col in financial_cols:
+    cleaned_col = clean_numeric_series(df[col])
+    if cleaned_col.notna().sum() > 0:
+        df[col] = cleaned_col
+        cleaned_numeric_cols.append(col)
+
+# Second: try remaining object columns as numeric-like
+remaining_object_cols = [
+    col for col in df.columns
+    if df[col].dtype == "object" and col not in cleaned_numeric_cols
+]
+
+for col in remaining_object_cols:
+    cleaned_col = clean_numeric_series(df[col])
+    original_non_null = df[col].notna().sum()
+    cleaned_non_null = cleaned_col.notna().sum()
+
+    if original_non_null > 0 and (cleaned_non_null / original_non_null) >= 0.6:
+        df[col] = cleaned_col
+        cleaned_numeric_cols.append(col)
+
+if cleaned_numeric_cols:
+    st.success(f"Converted to numeric: {', '.join(cleaned_numeric_cols)}")
+else:
+    st.info("No messy numeric-like columns needed conversion.")
 
         # -------- DATE VALIDATION --------
         date_cols = [col for col in df.columns if "date" in col.lower()]
