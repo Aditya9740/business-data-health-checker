@@ -27,16 +27,21 @@ if uploaded_file is not None:
     missing = df.isnull().sum()
     missing = missing[missing > 0]
 
-    if not missing.empty:
-        missing_df = pd.DataFrame({
-            "Column": missing.index,
-            "Missing Values": missing.values,
-            "Missing %": ((missing.values / len(df)) * 100).round(2)
-        })
-        st.write("Missing Values by Column:")
-        st.dataframe(missing_df, use_container_width=True)
-    else:
-        st.success("No missing values found.")
+missing = df.isnull().sum()
+missing = missing[missing > 0]
+
+if not missing.empty:
+    missing_df = pd.DataFrame({
+        "Column": missing.index.tolist(),
+        "Missing Values": missing.values.tolist(),
+        "Missing %": ((missing.values / len(df)) * 100).round(2).tolist()
+    })
+
+    st.write(f"Columns with missing values: {len(missing_df)}")
+    st.write(f"Total missing cells: {int(missing.sum())}")
+    st.table(missing_df)
+else:
+    st.success("No missing values found.")
 
     st.subheader("📋 Column Types")
     dtype_df = pd.DataFrame({
