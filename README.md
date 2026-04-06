@@ -58,12 +58,14 @@ Turn raw business data into **clear, actionable insights** that help companies:
 
 ---
 
-## 📩 Work With Me
+### 📩 Work With Me
 
-If you want a custom data audit or dashboard:
-👉 Connect with me on LinkedIn
-👉 Or message me directly
+If you have messy business data and want clear, actionable insights:
 
----
+📧 Email: [mahajanaditya814@gmail.com](mailto:mahajanaditya814@gmail.com)
+🔗 LinkedIn: [linkedin.com/in/aditya-mahajan-58b432266](https://www.linkedin.com/in/aditya-mahajan-58b432266)
+
+🚀 Open to freelance projects, business consulting, and full-time opportunities
+
 
 ⭐ Star this repo to follow progress
